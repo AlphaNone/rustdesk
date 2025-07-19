@@ -10,6 +10,21 @@ jobs:
   run-flutter-nightly-build:
     uses: ./.github/workflows/flutter-build.yml
     secrets: inherit
-    with:
-      upload-artifact: true
-      upload-tag: "nightly"
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Create Release
+        if: ${{ inputs.upload-tag != '' }}
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ inputs.upload-tag }}
+          name: ${{ inputs.upload-tag }} Build
+          draft: false
+          prerelease: true
+          upload-tag: "nightly"
